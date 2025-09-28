@@ -1,0 +1,43 @@
+package COnditional_Statements.Grade_Of_Student;
+
+import java.util.Scanner;
+
+public class gos {
+    
+    /*
+     * Input marks of a student and print the grade according to rules:
+     * 
+     * 90–100 → A
+     * 
+     * 80–89 → B
+     * 
+     * 70–79 → C
+     * 
+     * 60–69 → D
+     * 
+     * <60 → Fail
+     */
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the Marks of the student: ");
+        int marks = sc.nextInt();
+
+        if (marks >= 90 && marks <= 100) {
+            System.out.println("Grade of Student for " + marks + " Marks : A");
+        } else if (marks >= 80 && marks <= 89) {
+            System.out.println("Grade of Student for " + marks + " Marks : B");
+        } else if (marks >= 70 && marks <= 79) {
+            System.out.println("Grade of Student for " + marks + " Marks : C");
+        } else if (marks >= 60 && marks <= 69) {
+            System.out.println("Grade of Student for " + marks + " Marks : D");
+        } else if (marks < 60) {
+            System.out.println("Grade of Student for " + marks + " Marks : Failed");
+        } else {
+            System.out.println("Invalid marks! Please enter between 0 and 100.");
+        }
+
+        sc.close();
+    }
+}
