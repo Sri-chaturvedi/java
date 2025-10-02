@@ -11,7 +11,7 @@ package Sorting.InsertionSorting;
  * Time Complexity:
  *   - Worst case: O(n^2)
  *   - Best case: O(n) (already sorted)
- * Space Complexity: O(1) → In-place sorting
+ * Space Complexity: O(1) → In-place sorting 
  */
 public class InsertionSort {
 
