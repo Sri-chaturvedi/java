@@ -1,72 +1,137 @@
+/*
+=====================================================================================
+📘 PROGRAM NAME  : Sudoku Solver using Backtracking
+📂 PACKAGE       : SudukuSolution
+💡 TOPIC         : Backtracking Algorithm in Java
+
+📅 DESCRIPTION   : 
+   This program solves a 9×9 Sudoku puzzle using Recursion and Backtracking.
+   It systematically tries to fill empty cells with digits (1–9) ensuring that 
+   no number is repeated in any row, column, or 3×3 subgrid.
+
+=====================================================================================
+🎯 QUESTION:
+Solve a given 9×9 Sudoku board such that:
+1️⃣ Every row contains digits 1–9 without repetition.
+2️⃣ Every column contains digits 1–9 without repetition.
+3️⃣ Every 3×3 subgrid contains digits 1–9 without repetition.
+
+Input cells with '.' represent empty spaces.
+
+=====================================================================================
+🧠 DRY RUN (Concept):
+Start at cell (0,0)
+→ If filled → move to next cell.
+→ If empty:
+     - Try numbers 1–9
+     - If valid → place it → move forward recursively
+     - If invalid → backtrack (reset to '.')
+Continue until the board is completely filled.
+
+=====================================================================================
+⚙️ ALGORITHM / LOGIC FLOW:
+1️⃣ Traverse the Sudoku board cell by cell.
+2️⃣ If cell already contains a number, skip it.
+3️⃣ If empty:
+     - Try placing digits 1–9.
+     - Use `isSafe()` to check if it’s valid:
+         → No repetition in the row.
+         → No repetition in the column.
+         → No repetition in the 3×3 subgrid.
+4️⃣ If valid → place the digit and recurse to the next cell.
+5️⃣ If no valid digit → backtrack (undo placement).
+6️⃣ Continue until the board is completely solved.
+
+=====================================================================================
+📊 TIME COMPLEXITY:
+O(9^(N*N)) in the worst case (since each cell can take 9 possibilities).
+
+💾 SPACE COMPLEXITY:
+O(N*N) → For recursion stack and Sudoku board.
+
+=====================================================================================
+💡 KEY POINTS:
+✔ Based on Recursion + Backtracking  
+✔ Similar logic as N-Queens or Permutations  
+✔ Efficient pruning using `isSafe()` validation  
+✔ Teaches constraint satisfaction and recursive search  
+
+=====================================================================================
+*/
+
 package SudukuSolution;
 
 public class solution2 {
 
-public boolean isSafe(char[][] board, int row, int col, int number){
-    for(int i =0; i< board.length; i++){ // Loop from 0 to last of the board
-        if (board[i][col] == (char)(number + '0') || board[row][i] == (char)(number + '0')) { // Ckeck if there is any number on any column or on any row
-            return false;  //if there is a number return false
-        }
-    }
-
-    //new row for staring row and starting colmun
-    int  sr = (row/3)*3;
-    int  sc = (col/3)*3;
-
-    //ron loop for 3*3 grid to check there is any number on grid or not 
-    for(int i= sr; i< sr +3; i++){
-        for(int j = sc; j< sc +3; j++){
-            if (board[i][j] == (char)(number + '0')) {
-                return false; // if there is a number return false
+    // 🔹 Check if it's safe to place a number at board[row][col]
+    public boolean isSafe(char[][] board, int row, int col, int number) {
+        // Loop through the entire board to check the row and column
+        for (int i = 0; i < board.length; i++) { 
+            // Check if number already exists in same column or row
+            if (board[i][col] == (char) (number + '0') || board[row][i] == (char) (number + '0')) {
+                return false;  // ❌ Not safe to place
             }
         }
-    }
-    return true; // if all number place on right place return true
-}
 
-    // Recursive function to solve Sudoku using backtracking
-    public boolean helper(char[][] board, int row, int col) {
-        // If we have reached beyond the last row, Sudoku is solved
-        if (row == board.length) {
-            return true; //Reached end of board
-        }
-        int nrow = 0; //Next row
-        int ncol = 0; //Next column
+        // Determine the starting row and column for the current 3×3 grid
+        int sr = (row / 3) * 3;
+        int sc = (col / 3) * 3;
 
-        //Move to the next cell in the row
-        if (col != board.length - 1) {
-            nrow = row;     // Stay on the same row
-            col = col + 1;  //Move to next column
-        }else{
-            //Move to the first column of next row
-            nrow = row + 1;
-            col = 0;
-        }
-
-        //If the current cell is already filled, skip to the next cell
-        if (board[row][col] != '.') {
-           return helper(board, nrow, ncol);  //Already filled, skip
-        }else{
-            //Try placing digit 1 to 9
-            for(int i = 1; i<=9; i++){                  // numbers from 1 to 9
-                if (isSafe(board, row, col, i)) {       // check if it's safe to place i here
-                    board[row][col] = (char) (i+ '0');  // place i in character form{place the digit (convert to char) on board}
-                    if (helper(board, nrow, ncol)) {    // Recurse to solve rest of the board
-                        return true;                    // if successful, return true
-                    }
-                    board[row][col] = '.';              // backtrack: reset if it doesn't lead to solution
+        // Check within the 3×3 subgrid for duplicates
+        for (int i = sr; i < sr + 3; i++) {
+            for (int j = sc; j < sc + 3; j++) {
+                if (board[i][j] == (char) (number + '0')) {
+                    return false; // ❌ Not safe within subgrid
                 }
             }
         }
-        return false; // If no valid digit can be placed, return false
 
+        return true; // ✅ Safe position
     }
 
-    // Entry point to solve suduko
+    // 🔹 Recursive function to solve Sudoku using Backtracking
+    public boolean helper(char[][] board, int row, int col) {
+        // Base Case → If reached end of board, solution is found
+        if (row == board.length) {
+            return true; 
+        }
+
+        int nrow = 0; // Next row
+        int ncol = 0; // Next column
+
+        // Move to next column or next row
+        if (col != board.length - 1) {
+            nrow = row;        // Stay in same row
+            ncol = col + 1;    // Move to next column
+        } else {
+            nrow = row + 1;    // Move to next row
+            ncol = 0;          // Reset to first column
+        }
+
+        // If current cell is prefilled, skip it
+        if (board[row][col] != '.') {
+            return helper(board, nrow, ncol);
+        } else {
+            // Try placing numbers from 1–9
+            for (int i = 1; i <= 9; i++) {
+                if (isSafe(board, row, col, i)) {               // ✅ Safe placement
+                    board[row][col] = (char) (i + '0');         // Place digit
+                    if (helper(board, nrow, ncol)) {            // Recurse for next cells
+                        return true;
+                    }
+                    board[row][col] = '.';                      // 🔙 Backtrack if not successful
+                }
+            }
+        }
+        return false; // ❌ No valid number fits here
+    }
+
+    // 🔹 Entry point to solve Sudoku
     public void solveSudoku(char[][] board) {
         helper(board, 0, 0);
     }
 
+    // 🔹 Driver Code
     public static void main(String[] args) {
         char[][] board = {
             {'5','3','.','.','7','.','.','.','.'},
@@ -81,11 +146,11 @@ public boolean isSafe(char[][] board, int row, int col, int number){
         };
 
         solution2 solver = new solution2();
-
         solver.solveSudoku(board);
 
-        for(int i = 0; i< 9 ; i++){
-            for(int j=0; j<9; j++){
+        System.out.println("\n✅ Solved Sudoku:\n");
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
                 System.out.print(board[i][j] + " ");
             }
             System.out.println();
