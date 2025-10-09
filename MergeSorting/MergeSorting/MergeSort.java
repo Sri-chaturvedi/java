@@ -60,7 +60,7 @@ Functions:
 =====================================================================================
 */
 
-package MergeSorting;
+package MergeSorting.MergeSorting;
 
 public class MergeSort {
 

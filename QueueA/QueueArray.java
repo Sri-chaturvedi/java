@@ -1,4 +1,3 @@
-package QueueA;
 public class QueueArray{
     static class Queue{
         static int arr[];
