@@ -3,7 +3,7 @@
 📘 PROGRAM NAME  : Complete OOPS Concepts in Java
 📂 PACKAGE       : OOPS.Concepts
 💡 TOPIC         : Encapsulation, Inheritance, Polymorphism, Abstraction, Constructors, etc.
-✍️ AUTHOR        : [Your Name]
+✍️ AUTHOR        : Srijendra Nath Chaturvedi
 📅 DESCRIPTION   :
    This program demonstrates ALL major Object-Oriented Programming concepts in Java
    through simple, understandable, and executable examples.
@@ -22,7 +22,7 @@
 =====================================================================================
 */
 
-package OOPSConcepts.OPPSconcept;
+package OOPSConcepts;
 
 // ===============================================
 // 1️⃣ CLASS & OBJECT + CONSTRUCTORS
