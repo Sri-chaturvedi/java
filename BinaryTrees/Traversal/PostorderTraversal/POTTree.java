@@ -1,5 +1,3 @@
-package BinaryTrees.PostorderTraversal;
-
 public class POTTree {
      static class Node {
         int data;
