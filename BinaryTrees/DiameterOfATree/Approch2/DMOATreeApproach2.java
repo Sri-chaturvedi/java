@@ -1,90 +1,126 @@
+/*
+=====================================================================================
+📘 PROGRAM NAME  : Diameter of a Binary Tree (Approach 2 — Optimized)
+📂 PACKAGE       : BinaryTrees.DiameterOfATree.Approch2
+💡 TOPIC         : Binary Tree Recursion | Diameter Calculation (Optimized)
+📅 DESCRIPTION   :
+   This program calculates the **diameter of a binary tree** efficiently — 
+   i.e., the length of the longest path between any two nodes in the tree.
+
+   Unlike Approach 1, this uses a single traversal to compute both 
+   height and diameter simultaneously (O(n) time).
+
+=====================================================================================
+🎯 OBJECTIVE:
+Find the **diameter (longest path)** in a binary tree using recursion and 
+an optimized approach to avoid repeated height calculations.
+
+Example Input:
+{1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1}
+
+Tree Structure:
+                1
+              /   \
+             2     3
+            / \     \
+           4   5     6
+
+=====================================================================================
+🧠 DRY RUN:
+
+- Height(4) = 1, Height(5) = 1, Height(2) = 2  
+- Height(6) = 1, Height(3) = 2  
+- Diameter through root (1) = Height(left) + Height(right) + 1 = 2 + 2 + 1 = 5  
+
+✅ Diameter = 5
+
+=====================================================================================
+⚙️ LOGIC / RECURSION FLOW:
+
+1️⃣ Base Case → If root == null → return TreeInfo(0, 0)  
+2️⃣ Compute left and right subtree info:  
+     left  = diameter(root.left)  
+     right = diameter(root.right)  
+3️⃣ Current Node:  
+     myHeight = max(left.ht, right.ht) + 1  
+     diamThroughRoot = left.ht + right.ht + 1  
+     myDiameter = max(left.diam, right.diam, diamThroughRoot)  
+4️⃣ Return TreeInfo(myHeight, myDiameter)
+
+=====================================================================================
+📊 TIME COMPLEXITY  : O(n) → Single traversal of all nodes  
+📊 SPACE COMPLEXITY : O(h) → Recursion stack, where h = height of tree
+=====================================================================================
+*/
+
 package BinaryTrees.DiameterOfATree.Approch2;
 
 public class DMOATreeApproach2 {
+
+    // 🔹 Node structure for Binary Tree
     static class Node {
         int data;
         Node left;
         Node right;
 
-        Node(int data){
+        Node(int data) {
             this.data = data;
             this.left = null;
             this.right = null;
         }
     }
 
-    static class BinaryTree{
+    // 🔹 Utility to build a tree using Preorder input (-1 indicates null)
+    static class BinaryTree {
         static int idx = -1;
-        public static Node buildTree(int nodes[]){
+
+        public static Node buildTree(int[] nodes) {
             idx++;
             if (nodes[idx] == -1) {
                 return null;
             }
 
-            Node newNode = new Node (nodes[idx]);
+            Node newNode = new Node(nodes[idx]);
             newNode.left = buildTree(nodes);
             newNode.right = buildTree(nodes);
 
             return newNode;
         }
     }
-    public static int height(Node root){
-        if (root == null) {
-            return 0;
-        }
 
-        int leftHeight = height(root.left);
-        int rightHeight = height(root.right);
-
-        int myHeight = Math.max(leftHeight, rightHeight) + 1;
-
-        return myHeight;
-    }
-
-    public static int diameter(Node root){
-        if (root == null) {
-            return 0;
-        }
-        int diam1 = diameter(root.left);
-        int diam2 = diameter(root.right);
-        int diam3 = height(root.left)+ height(root.right) + 1;
-
-        return Math.max(diam3, Math.max(diam1,diam2));
-    }
-
+    // 🔹 Class to hold height and diameter together
     static class TreeInfo {
-        int ht;
-        int diam;
+        int ht;    // Height of current subtree
+        int diam;  // Diameter of current subtree
 
-        TreeInfo(int ht, int diam){
+        TreeInfo(int ht, int diam) {
             this.ht = ht;
             this.diam = diam;
         }
     }
 
-    public static TreeInfo diameter2(Node root){
+    // 🔹 Optimized function to compute diameter and height simultaneously
+    public static TreeInfo diameter(Node root) {
         if (root == null) {
-           return new TreeInfo(0, 0);
+            return new TreeInfo(0, 0); // Base case
         }
 
-        TreeInfo left = diameter2(root.left);
-        TreeInfo right = diameter2(root.right);
+        TreeInfo left = diameter(root.left);   // Info from left subtree
+        TreeInfo right = diameter(root.right); // Info from right subtree
 
-        int myHeight = Math.max(left.ht, right.ht) + 1;
-        int diam1 = left.diam;
-        int diam2 = right.diam;
-        int diam3 = left.ht + right.ht + 1;
+        int myHeight = Math.max(left.ht, right.ht) + 1;           // Current node height
+        int diamThroughRoot = left.ht + right.ht + 1;             // Diameter passing through root
+        int myDiameter = Math.max(Math.max(left.diam, right.diam), diamThroughRoot); // Max diameter
 
-        int mydiam = Math.max(Math.max(diam1, diam2), diam3);
-
-        TreeInfo myInfo = new TreeInfo(myHeight, mydiam);
-        return myInfo;
+        return new TreeInfo(myHeight, myDiameter);
     }
-    public static void main(String[] args) {
-        int nodes[] = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
-        BinaryTree tree = new BinaryTree();
-       Node root = tree.buildTree(nodes);
 
-       System.out.println(diameter2(root).diam);
+    // 🔹 Main Method
+    public static void main(String[] args) {
+        int[] nodes = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
+        BinaryTree tree = new BinaryTree();
+        Node root = tree.buildTree(nodes);
+
+        System.out.println("✅ Diameter of the Binary Tree (Optimized Approach): " + diameter(root).diam);
     }
 }
