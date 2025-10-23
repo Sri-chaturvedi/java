@@ -1,12 +1,12 @@
 /*
 =====================================================================================
-📘 PROGRAM NAME  : Count Total Nodes in a Binary Tree
-📂 PACKAGE       : BinaryTrees.CountOfNodes
+📘 PROGRAM NAME  : Sum of All Nodes in a Binary Tree
+📂 PACKAGE       : BinaryTrees.SumOfNodes
 💡 TOPIC         : Recursion in Binary Trees
 📅 DESCRIPTION   :
-   This program builds a Binary Tree using preorder input 
-   (where `-1` represents a null node) and calculates 
-   the **total number of nodes** in the tree using recursion.
+   This program builds a Binary Tree using preorder traversal input 
+   (where `-1` represents a null node) and computes the **sum of all node values**
+   using a recursive approach.
 
    Example Input Array:
    {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1}
@@ -19,26 +19,28 @@
            4   5     6
 =====================================================================================
 🎯 OBJECTIVE:
-Find the **total count of nodes** in the Binary Tree.
-
-🧠 FORMULA:
-Total Nodes = 1 (root) + Count of Left Subtree + Count of Right Subtree
+To calculate the total **sum of all nodes** present in the Binary Tree.
 =====================================================================================
-⚙️ LOGIC / ALGORITHM:
-1️⃣ If the tree (root) is null → return 0  
-2️⃣ Recursively count nodes in left and right subtrees  
-3️⃣ Return `1 + leftCount + rightCount`
+⚙️ ALGORITHM / LOGIC:
+1️⃣ Base Case: If root is `null`, return 0.  
+2️⃣ Recursively calculate:
+    - leftSum = sum of left subtree  
+    - rightSum = sum of right subtree  
+3️⃣ Return: `leftSum + rightSum + root.data`
 =====================================================================================
-📊 TIME COMPLEXITY : O(n)   → each node is visited once
-📊 SPACE COMPLEXITY : O(h)  → recursion stack (where h = height of tree)
+🧠 DRY RUN (for the above tree):
+Sum = (4 + 5 + 2) + (6 + 3) + 1 = 21
+=====================================================================================
+📊 TIME COMPLEXITY : O(n) → Each node is visited once
+📊 SPACE COMPLEXITY : O(h) → Recursion stack space, where h = height of the tree
 =====================================================================================
 */
 
-package BinaryTrees.CountOfNodes;
+package BinaryTrees.SumOfNodes;
 
-public class CountOfNodesTree {
+public class SumOfNodesTree {
 
-    // 🔹 Node class representing each tree element
+    // 🔹 Node structure for Binary Tree
     static class Node {
         int data;
         Node left;
@@ -58,7 +60,6 @@ public class CountOfNodesTree {
         public static Node buildTree(int[] nodes) {
             idx++;
 
-            // Base Case: -1 represents a null node
             if (nodes[idx] == -1) {
                 return null;
             }
@@ -71,24 +72,24 @@ public class CountOfNodesTree {
         }
     }
 
-    // 🔹 Recursive function to count total nodes in the Binary Tree
-    public static int countOfNodes(Node root) {
+    // 🔹 Recursive function to calculate sum of all nodes
+    public static int sumOfNodes(Node root) {
         if (root == null) {
             return 0;
         }
 
-        int leftCount = countOfNodes(root.left);
-        int rightCount = countOfNodes(root.right);
+        int leftSum = sumOfNodes(root.left);
+        int rightSum = sumOfNodes(root.right);
 
-        return leftCount + rightCount + 1; // 1 (for current node)
+        return leftSum + rightSum + root.data;
     }
 
-    // 🔹 Main function
+    // 🔹 Main method to run the program
     public static void main(String[] args) {
         int[] nodes = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
         BinaryTree tree = new BinaryTree();
         Node root = tree.buildTree(nodes);
 
-        System.out.println("✅ Total Number of Nodes in the Tree: " + countOfNodes(root));
+        System.out.println("✅ Sum of all nodes in the Binary Tree: " + sumOfNodes(root));
     }
 }
