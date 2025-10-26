@@ -1,4 +1,4 @@
-package Arrays.Array_Of_Names;
+package array;
 
 import java.util.Scanner;
 
