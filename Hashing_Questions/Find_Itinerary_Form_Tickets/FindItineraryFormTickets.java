@@ -41,7 +41,7 @@ package Hashing_Questions.Find_Itinerary_Form_Tickets;
 
 import java.util.HashMap;
 
-public class FIFT {
+public class FindItineraryFormTickets {
 
     // 🔹 Function to find the starting city of the itinerary
     public static String getStart(HashMap<String, String> tickets) {
