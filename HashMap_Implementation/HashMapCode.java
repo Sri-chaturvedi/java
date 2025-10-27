@@ -1,9 +1,56 @@
+/*
+=====================================================================================
+📘 PROGRAM NAME  : Custom HashMap Implementation in Java
+📂 PACKAGE       : HashMap_Implementation
+💡 TOPIC         : Data Structures | Hashing | Generics | Custom HashMap
+📅 DESCRIPTION   :
+   This program demonstrates how to manually implement a simplified version
+   of Java’s `HashMap` using an array of LinkedLists for handling collisions
+   (separate chaining method).
+
+=====================================================================================
+🎯 OBJECTIVE:
+Implement a generic `HashMap<K, V>` that supports:
+   - put(key, value)
+   - get(key)
+   - remove(key)
+   - contains(key)
+   - keySet()
+   - isEmpty()
+   - Rehashing when load factor exceeds threshold.
+
+=====================================================================================
+⚙️ CONCEPTS USED:
+
+1️⃣ **Hash Function** → Converts a key into an index using `hashCode() % N`.
+2️⃣ **Collision Handling** → Implemented via *Separate Chaining* using LinkedLists.
+3️⃣ **Rehashing** → Automatically doubles the bucket array size when load factor 
+   (`n / N`) exceeds the threshold (2.0 here).
+4️⃣ **Generics** → Works for any key and value data type.
+
+=====================================================================================
+📊 TIME COMPLEXITY:
+   - put()      → O(1) average
+   - get()      → O(1) average
+   - remove()   → O(1) average
+   - contains() → O(1) average
+   - keySet()   → O(n)
+   - rehash()   → O(n)
+
+📊 SPACE COMPLEXITY : O(n)
+=====================================================================================
+*/
+
 package HashMap_Implementation;
 
 import java.util.*;
 
 public class HashMapCode {
-    static class HashMap<K,V> {  //generics
+
+    // 🔹 Inner Custom HashMap Class
+    private class HashMap<K, V> {
+
+        // 🔹 Node Structure for Each (Key, Value) Pair
         private class Node {
             K key;
             V value;
@@ -14,12 +61,13 @@ public class HashMapCode {
             }
         }
 
-        private int n; //n = Total numbers of nodes
-        private int N; //N = Total number of buckets
-        private LinkedList<Node> buckets[];
+        // 🧱 Data Members
+        private int n;                  // Number of key-value pairs
+        private int N;                  // Number of buckets
+        private LinkedList<Node>[] buckets;  // Array of LinkedLists
 
-        @SuppressWarnings("unchecked")
-        public HashMap(){
+        // 🔹 Constructor (Initial Capacity = 4)
+        public HashMap() {
             this.N = 4;
             this.buckets = new LinkedList[4];
             for (int i = 0; i < 4; i++) {
@@ -27,122 +75,129 @@ public class HashMapCode {
             }
         }
 
-        private int hashFunction(K key){ //0 to N-1
+        // 🧮 Hash Function → Returns Bucket Index
+        private int hashFunction(K key) {
             int bi = key.hashCode();
             return Math.abs(bi) % N;
         }
 
-        private int searchInLL(K key, int bi){
+        // 🔍 Searches for a Key in a Specific LinkedList
+        private int searchInLL(K key, int bi) {
             LinkedList<Node> ll = buckets[bi];
-            for(int i=0; i<ll.size(); i++){
-                if (ll.get(i).key == key) {
-                    return i; //di
+            for (int i = 0; i < ll.size(); i++) {
+                if (ll.get(i).key.equals(key)) { // ✅ Use equals(), not ==
+                    return i;
                 }
             }
             return -1;
         }
-        @SuppressWarnings("unchecked")
-        private void rehash(){
-            LinkedList<Node> oldBucket[] = buckets;
-            buckets = new LinkedList[N*2];
 
-            for (int i = 0; i < N*2; i++) {
+        // 🔁 Rehashing → Doubles the Bucket Array Size
+        private void rehash() {
+            LinkedList<Node>[] oldBuckets = buckets;
+            buckets = new LinkedList[N * 2];
+            N = N * 2;
+
+            for (int i = 0; i < N; i++) {
                 buckets[i] = new LinkedList<>();
             }
 
-            for(int i=0; i<oldBucket.length; i++){
-                LinkedList<Node> ll = oldBucket[i];
-                for (int j = 0; j < ll.size(); j++) {
-                    Node node = ll.get(j);
+            n = 0; // Reset count before re-inserting
+            for (int i = 0; i < oldBuckets.length; i++) {
+                for (Node node : oldBuckets[i]) {
                     put(node.key, node.value);
                 }
             }
         }
 
-        public void put(K key, V value){
-            int bi = hashFunction(key); // bi = Backet index
-            int di = searchInLL(key, bi); //di = data index
+        // 🟢 Insert or Update Key-Value Pair
+        public void put(K key, V value) {
+            int bi = hashFunction(key);
+            int di = searchInLL(key, bi);
 
-            if (di == -1) { //Key doesn't exist
+            if (di == -1) {
                 buckets[bi].add(new Node(key, value));
                 n++;
-            }else{// Key exists
-                Node node =buckets[bi].get(di);
-                node.value = value;
+            } else {
+                Node node = buckets[bi].get(di);
+                node.value = value; // Update existing value
             }
 
-            double lambda = (double)n/N;
+            double lambda = (double) n / N;
             if (lambda > 2.0) {
-                //rehashing
                 rehash();
             }
         }
 
-        public boolean containsKey(K key){
-            int bi = hashFunction(key); // bi = Backet index
-            int di = searchInLL(key, bi); //di = data index
-
-            if (di == -1) { //Key doesn't exist
-                return false;
-            }else{// Key exists
-                return true;
-            }
+        // 🔍 Check if Key Exists
+        public boolean contains(K key) {
+            int bi = hashFunction(key);
+            int di = searchInLL(key, bi);
+            return di != -1;
         }
 
-        public V remove(K key){
-            int bi = hashFunction(key); // bi = Backet index
-            int di = searchInLL(key, bi); //di = data index
+        // 🧾 Retrieve Value by Key
+        public V get(K key) {
+            int bi = hashFunction(key);
+            int di = searchInLL(key, bi);
 
-            if (di == -1) { //Key doesn't exist
-                return null;
-            }else{// Key exists
-                Node node = buckets[bi].remove(di);
-                n--;
-                return node.value;
-            }
+            if (di == -1) return null;
+            return buckets[bi].get(di).value;
         }
 
-        public V get(K key){
-            int bi = hashFunction(key); // bi = Backet index
-            int di = searchInLL(key, bi); //di = data index
+        // 🗑️ Remove a Key-Value Pair
+        public V remove(K key) {
+            int bi = hashFunction(key);
+            int di = searchInLL(key, bi);
 
-            if (di == -1) { //Key doesn't exist
-                return null;
-            }else{// Key exists
-                Node node = buckets[bi].get(di);
-                return node.value;
-            }
+            if (di == -1) return null;
+
+            Node node = buckets[bi].remove(di);
+            n--;
+            return node.value;
         }
 
-        public ArrayList<K> keySet(){
+        // 🔑 Return All Keys in the HashMap
+        public ArrayList<K> keySet() {
             ArrayList<K> keys = new ArrayList<>();
 
-            for (int i = 0; i < buckets.length; i++) { //bi
-                LinkedList<Node> ll = buckets[i];
-                for (int j = 0; j < ll.size(); j++) { // di
-                    Node node = ll.get(j);
+            for (LinkedList<Node> ll : buckets) {
+                for (Node node : ll) {
                     keys.add(node.key);
                 }
             }
+
             return keys;
         }
 
-        public boolean isEmpty(){
+        // 🧩 Check if HashMap is Empty
+        public boolean isEmpty() {
             return n == 0;
         }
     }
+
+    // 🔹 MAIN METHOD (Driver Code)
     public static void main(String[] args) {
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put("India", 190);
+        HashMapCode outer = new HashMapCode();
+        HashMap<String, Integer> map = outer.new HashMap<>();
+
+        // Inserting key-value pairs
+        map.put("India", 120);
         map.put("China", 200);
         map.put("US", 50);
 
+        // Printing all key-value pairs
         ArrayList<String> keys = map.keySet();
-        for (int i = 0; i < keys.size(); i++) {
-            System.out.println(keys.get(i)+" "+map.get(keys.get(i)));
+        System.out.println("🌍 Country → Population:");
+        for (String key : keys) {
+            System.out.println("➡️ " + key + " → " + map.get(key));
         }
 
-        map.remove("India");
-        System.out.println(map.get("India"));
+        // Removing an entry
+        System.out.println("\n🗑️ Removing 'China'...");
+        map.remove("China");
+
+        // Checking after removal
+        System.out.println("📉 China Population (after removal): " + map.get("China"));
     }
 }
