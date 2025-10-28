@@ -1,16 +1,14 @@
 package Trie_Questions.Count_Unique_SubString;
 
-public class CUSS {
+public class CountUniqueSubStrings {
     static class Node {
-        Node[] children; // 26
-        boolean eow;
+        Node[] children = new Node[26]; // 26
+        boolean eow = false;
 
         public Node() {
-            children = new Node[26];
             for (int i = 0; i < 26; i++) {
                 children[i] = null;
             }
-            eow = false;
         }
     }
 
@@ -50,28 +48,29 @@ public class CUSS {
 
         return true;
     }
-public static int countNode(Node root){
-    if (root == null) {
-        return 0 ;
-    }
 
-    int count = 0;
-    for(int i=0; i<26; i++){
-        if (root.children[i] != null) {
-            count += countNode(root.children[i]);
+    public static int countNode(Node root) {
+        if (root == null) {
+            return 0;
         }
+
+        int count = 0;
+        for (int i = 0; i < 26; i++) {
+            if (root.children[i] != null) {
+                count += countNode(root.children[i]);
+            }
+        }
+
+        return count + 1;
     }
 
-    return count+1;
-}
     public static void main(String args[]) {
-        String str = "ababa";
+        String str = "apple";
 
-        for(int i=0; i<str.length(); i++){
+        for (int i = 0; i < str.length(); i++) {
             String suffix = str.substring(i);
             insert(suffix);
         }
-
         System.out.println(countNode(root));
     }
 }
