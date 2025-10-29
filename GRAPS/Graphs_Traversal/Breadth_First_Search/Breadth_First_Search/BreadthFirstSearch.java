@@ -69,7 +69,7 @@ Example Graph Structure:
 =====================================================================================
 */
 
-package GRAPS.Graphs_Traversal.Breadth_First_Search;
+package GRAPS.Graphs_Traversal.Breadth_First_Search.Breadth_First_Search;
 
 import java.util.*;
 
