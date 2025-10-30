@@ -52,11 +52,11 @@ Example Graph:
 =====================================================================================
 */
 
-package GRAPS.Cycle_Detection;
+package GRAPS.Cycle_Detection.Directed_Graph;
 
 import java.util.ArrayList;
 
-public class CycleDetection {
+public class DirectedGraph {
 
     // 🔹 Edge class representing a directed edge between two vertices
     static class Edge {
